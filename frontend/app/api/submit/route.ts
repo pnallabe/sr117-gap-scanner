@@ -20,12 +20,16 @@ export async function POST(req: NextRequest) {
 
     const scoreData = await assessRes.json();
 
-    // Trigger async PDF/email (fire-and-forget from frontend perspective)
-    fetch(`${BACKEND_URL}/api/v1/report`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }).catch(() => {/* background — ignore errors */});
+    // Trigger PDF generation + email — awaited so Vercel doesn't kill the request
+    try {
+      await fetch(`${BACKEND_URL}/api/v1/report`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch {
+      // Non-fatal: score already returned, email failure shouldn't block user
+    }
 
     return NextResponse.json(scoreData);
   } catch (err) {
