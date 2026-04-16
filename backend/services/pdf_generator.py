@@ -50,7 +50,7 @@ BAND_COLORS = {
     "GREEN": (GREEN_BG, GREEN_FG),
 }
 
-CALENDLY_LINK = os.getenv("CALENDLY_LINK", "https://calendly.com/ilol/sr-117-diagnostic")
+CALENDLY_LINK = os.getenv("CALENDLY_LINK", "https://calendly.com/pradeep-nallabelli")
 
 ENFORCEMENT_CITATIONS = [
     {

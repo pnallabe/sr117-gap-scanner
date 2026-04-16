@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 _RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
 _SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", "")
 _FROM_EMAIL = os.getenv("FROM_EMAIL", "reports@ilol.ai")
-_CALENDLY_LINK = os.getenv("CALENDLY_LINK", "https://calendly.com/ilol/sr-117-diagnostic")
+_CALENDLY_LINK = os.getenv("CALENDLY_LINK", "https://calendly.com/pradeep-nallabelli")
 
 
 def _send_via_resend(to: str, subject: str, html: str, pdf_bytes: bytes, filename: str) -> None:
