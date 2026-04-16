@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+.next/
+.vercel/
+
+# Environment
+.env
+.env.local
+
+# Local data (leads fallback)
+backend/data/
+
+# GCP credentials
+*.json
+!package.json
+!tsconfig.json
+!postcss.config.mjs
+
+# OS
+.DS_Store

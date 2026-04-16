@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: sr117-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY:-}
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
+      - GCP_BUCKET_NAME=${GCP_BUCKET_NAME:-sr117-reports}
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_KEY=${SUPABASE_KEY:-}
+      - CALENDLY_LINK=${CALENDLY_LINK:-https://calendly.com/ilol/sr-117-diagnostic}
+      - FROM_EMAIL=${FROM_EMAIL:-reports@ilol.ai}
+      - ALLOWED_ORIGINS=http://localhost:3000
+    volumes:
+      - ./backend/data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: sr117-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+      - NEXT_PUBLIC_CALENDLY_LINK=${NEXT_PUBLIC_CALENDLY_LINK:-https://calendly.com/ilol/sr-117-diagnostic}
+    depends_on:
+      backend:
+        condition: service_healthy

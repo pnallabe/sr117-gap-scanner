@@ -1,0 +1,44 @@
+steps:
+  # Build backend image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/sr117-backend:$COMMIT_SHA"
+      - -f
+      - Dockerfile.backend
+      - .
+    id: build-backend
+
+  # Push backend image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - push
+      - "gcr.io/$PROJECT_ID/sr117-backend:$COMMIT_SHA"
+    id: push-backend
+    waitFor: [build-backend]
+
+  # Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - sr117-scanner-api
+      - --image=gcr.io/$PROJECT_ID/sr117-backend:$COMMIT_SHA
+      - --region=us-central1
+      - --platform=managed
+      - --allow-unauthenticated
+      - --min-instances=1
+      - --max-instances=10
+      - --cpu=1
+      - --memory=512Mi
+      - --port=8000
+      - --set-env-vars=GCP_PROJECT_ID=$PROJECT_ID,GCP_BUCKET_NAME=sr117-reports
+    id: deploy-backend
+    waitFor: [push-backend]
+
+images:
+  - "gcr.io/$PROJECT_ID/sr117-backend:$COMMIT_SHA"
+
+timeout: "1200s"
